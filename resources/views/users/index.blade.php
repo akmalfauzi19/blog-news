@@ -2,8 +2,10 @@
 
 @section('content')
     <div class="container-xxl flex-grow-1 container-p-y">
-        <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">DataTables /</span> Basic</h4>
-        <!-- DataTable with Buttons -->
+        <h4 class="fw-bold py-3 mb-4">
+            Management User
+        </h4>
+
         <div class="card">
             <div class="card-datatable table-responsive">
                 <table class="datatables-basic table border-top">

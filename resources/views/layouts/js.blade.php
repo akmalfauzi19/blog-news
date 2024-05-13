@@ -17,6 +17,8 @@
   <script src="{{ asset('admin/vendor/libs/formvalidation/dist/js/FormValidation.min.js') }}"></script>
   <script src="{{ asset('admin/vendor/libs/formvalidation/dist/js/plugins/Bootstrap5.min.js') }}"></script>
   <script src="{{ asset('admin/vendor/libs/formvalidation/dist/js/plugins/AutoFocus.min.js') }}"></script>
+  <script src="{{ asset('admin/vendor/libs/sweetalert2/sweetalert2.js') }}"></script>
+
 
   <!-- Main JS -->
   <script src="{{ asset('admin/js/main.js') }}"></script>
@@ -24,12 +26,9 @@
   <!-- Page JS -->
   <script src="{{ asset('admin/js/app-access-roles.js') }}"></script>
   <script src="{{ asset('admin/js/modal-add-role.js') }}"></script>
-
+  <script src="{{ asset('admin/js/extended-ui-sweetalert2.js') }}"></script>
+  <script src="{{ asset('admin/js/tables-datatables-basic.js') }}"></script>
 
   <!-- Flat Picker -->
   {{-- <script src="{{ asset('admin/vendor/libs/moment/moment.js') }}"></script> --}}
   {{-- <script src="{{ asset('admin/vendor/libs/flatpickr/flatpickr.js') }}"></script> --}}
-
-
-  <!-- Page JS -->
-  <script src="{{ asset('admin/js/tables-datatables-basic.js') }}"></script>
