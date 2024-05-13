@@ -1,57 +1,84 @@
-@extends('layouts.app')
-
+@extends('layouts.main')
 
 @section('content')
-    <div class="row">
-        <div class="col-lg-12 margin-tb">
-            <div class="pull-left">
-                <h2>Users Management</h2>
-            </div>
-            <div class="pull-right">
-                <a class="btn btn-success" href="{{ route('users.create') }}"> Create New User</a>
+    <div class="container-xxl flex-grow-1 container-p-y">
+        <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">DataTables /</span> Basic</h4>
+        <!-- DataTable with Buttons -->
+        <div class="card">
+            <div class="card-datatable table-responsive">
+                <table class="datatables-basic table border-top">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th></th>
+                            <th>id</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Date</th>
+                            <th>Salary</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                </table>
             </div>
         </div>
+        <!-- Modal to add new record -->
+        <div class="offcanvas offcanvas-end" id="add-new-record">
+            <div class="offcanvas-header border-bottom">
+                <h5 class="offcanvas-title" id="exampleModalLabel">New Record</h5>
+                <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            </div>
+            <div class="offcanvas-body flex-grow-1">
+                <form class="add-new-record pt-0 row g-2" id="form-add-new-record" onsubmit="return false">
+                    <div class="col-sm-12">
+                        <label class="form-label" for="basicFullname">Full Name</label>
+                        <div class="input-group input-group-merge">
+                            <span id="basicFullname2" class="input-group-text"><i class="bx bx-user"></i></span>
+                            <input type="text" id="basicFullname" class="form-control dt-full-name" name="basicFullname"
+                                placeholder="John Doe" aria-label="John Doe" aria-describedby="basicFullname2" />
+                        </div>
+                    </div>
+                    <div class="col-sm-12">
+                        <label class="form-label" for="basicPost">Post</label>
+                        <div class="input-group input-group-merge">
+                            <span id="basicPost2" class="input-group-text"><i class="bx bxs-briefcase"></i></span>
+                            <input type="text" id="basicPost" name="basicPost" class="form-control dt-post"
+                                placeholder="Web Developer" aria-label="Web Developer" aria-describedby="basicPost2" />
+                        </div>
+                    </div>
+                    <div class="col-sm-12">
+                        <label class="form-label" for="basicEmail">Email</label>
+                        <div class="input-group input-group-merge">
+                            <span class="input-group-text"><i class="bx bx-envelope"></i></span>
+                            <input type="text" id="basicEmail" name="basicEmail" class="form-control dt-email"
+                                placeholder="john.doe@example.com" aria-label="john.doe@example.com" />
+                        </div>
+                        <div class="form-text">You can use letters, numbers & periods</div>
+                    </div>
+                    <div class="col-sm-12">
+                        <label class="form-label" for="basicDate">Joining Date</label>
+                        <div class="input-group input-group-merge">
+                            <span id="basicDate2" class="input-group-text"><i class="bx bx-calendar"></i></span>
+                            <input type="text" class="form-control dt-date" id="basicDate" name="basicDate"
+                                aria-describedby="basicDate2" placeholder="MM/DD/YYYY" aria-label="MM/DD/YYYY" />
+                        </div>
+                    </div>
+                    <div class="col-sm-12">
+                        <label class="form-label" for="basicSalary">Salary</label>
+                        <div class="input-group input-group-merge">
+                            <span id="basicSalary2" class="input-group-text"><i class="bx bx-dollar"></i></span>
+                            <input type="number" id="basicSalary" name="basicSalary" class="form-control dt-salary"
+                                placeholder="12000" aria-label="12000" aria-describedby="basicSalary2" />
+                        </div>
+                    </div>
+                    <div class="col-sm-12">
+                        <button type="submit" class="btn btn-primary data-submit me-sm-3 me-1">Submit</button>
+                        <button type="reset" class="btn btn-outline-secondary" data-bs-dismiss="offcanvas">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <!--/ DataTable with Buttons -->
     </div>
-
-
-    @if ($message = Session::get('success'))
-        <div class="alert alert-success">
-            <p>{{ $message }}</p>
-        </div>
-    @endif
-
-
-    <table class="table table-bordered">
-        <tr>
-            <th>No</th>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Roles</th>
-            <th width="280px">Action</th>
-        </tr>
-        @foreach ($data as $key => $user)
-            <tr>
-                <td>{{ ++$i }}</td>
-                <td>{{ $user->name }}</td>
-                <td>{{ $user->email }}</td>
-                <td>
-                    @if (!empty($user->getRoleNames()))
-                        @foreach ($user->getRoleNames() as $v)
-                            <label class="badge badge-success">{{ $v }}</label>
-                        @endforeach
-                    @endif
-                </td>
-                <td>
-                    <a class="btn btn-info" href="{{ route('users.show', $user->id) }}">Show</a>
-                    <a class="btn btn-primary" href="{{ route('users.edit', $user->id) }}">Edit</a>
-                    {!! Form::open(['method' => 'DELETE', 'route' => ['users.destroy', $user->id], 'style' => 'display:inline']) !!}
-                    {!! Form::submit('Delete', ['class' => 'btn btn-danger']) !!}
-                    {!! Form::close() !!}
-                </td>
-            </tr>
-        @endforeach
-    </table>
-
-
-    {!! $data->render() !!}
 @endsection
