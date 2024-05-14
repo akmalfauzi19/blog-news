@@ -11,9 +11,13 @@ use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Exception;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
+    protected $_model;
     /**
      * Display a listing of the resource.
      *
@@ -21,6 +25,8 @@ class UserController extends Controller
      */
     function __construct()
     {
+        $this->_model = new User();
+
         $this->middleware('permission:user-list|user-create|user-edit|user-delete', ['only' => ['index', 'store']]);
         $this->middleware('permission:user-create', ['only' => ['create', 'store']]);
         $this->middleware('permission:user-edit', ['only' => ['edit', 'update']]);
@@ -33,21 +39,51 @@ class UserController extends Controller
      */
     public function index(Request $request): View
     {
-        $data = User::latest()->paginate(5);
-
-        return view('users.index', compact('data'))
-            ->with('i', ($request->input('page', 1) - 1) * 5);
+        return view('page.users.index');
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create(): View
+    public function list(Request $request): JsonResponse
     {
-        $roles = Role::pluck('name', 'name')->all();
-        return view('users.create', compact('roles'));
+        $model = $this->_model;
+        $draw = $request->get('draw');
+        $start = $request->get("start");
+        $rowperpage = $request->get("length"); // Rows display per page
+
+        $columnIndex_arr = $request->get('order');
+        $columnName_arr = $request->get('columns');
+        $order_arr = $request->get('order');
+        $search_arr = $request->get('search');
+
+        $columnIndex = $columnIndex_arr[0]['column']; // Column index
+        $columnName = $columnName_arr[$columnIndex]['data']; // Column name
+        $columnSortOrder = $order_arr[0]['dir']; // asc or desc
+        $searchValue = $search_arr['value']; // Search value
+        $filterRoles = $columnName_arr[4]['search']['value']; // role filter
+
+        $response = $model->list($columnName, $columnSortOrder, $searchValue, $start, $rowperpage, $draw, $filterRoles);
+
+        return response()->json($response);
+    }
+
+    public function getRole(Request $request): JsonResponse
+    {
+        $search = $request->search;
+
+        if ($search == '') {
+            $roles = Role::select('id', 'name')->get();
+        } else {
+            $roles = Role::orderby('name', 'asc')->select('id', 'name')->where('name', 'like', '%' . $search . '%')->get();
+        }
+
+        $response = [];
+        foreach ($roles as $role) {
+            $response[] = [
+                "id" => $role->id,
+                "text" => $role->name
+            ];
+        }
+
+        return response()->json($response);
     }
 
     /**
@@ -56,23 +92,39 @@ class UserController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request): RedirectResponse
+    public function store(Request $request): JsonResponse
     {
-        $this->validate($request, [
-            'name' => 'required',
-            'email' => 'required|email|unique:users,email',
-            'password' => 'required|same:confirm-password',
-            'roles' => 'required'
-        ]);
+        DB::beginTransaction();
+        try {
+            $validator = Validator::make($request->all(), [
+                'name' => 'required',
+                'email' => 'required|email|unique:users,email',
+                'password' => 'required|same:password_confirm',
+                'roles' => 'required'
+            ]);
 
-        $input = $request->all();
-        $input['password'] = Hash::make($input['password']);
+            if ($validator->fails()) {
+                return response()->json(['errors' => $validator->errors()], 400);
+            }
 
-        $user = User::create($input);
-        $user->assignRole($request->input('roles'));
+            $data = $request->all();
+            $data['password'] = Hash::make($data['password']);
 
-        return redirect()->route('users.index')
-            ->with('success', 'User created successfully');
+            $user = User::create($data);
+            $user->assignRole(intval($data['roles']));
+
+            DB::commit();
+            return response()->json([
+                'status' => true,
+                'message' => 'Berhasil menambahkan user'
+            ]);
+        } catch (Exception $e) {
+            DB::rollback();
+            return response()->json([
+                'status' => false,
+                'errors'  => $e->getMessage(),
+            ], 400);
+        }
     }
 
     /**
@@ -84,24 +136,39 @@ class UserController extends Controller
     public function show($id): View
     {
         $user = User::find($id);
-        return view('users.show', compact('user'));
+        return view('page.users.show', compact('user'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id): View
+    public function getUser(Request $request, $id): JsonResponse
     {
-        $user = User::find($id);
-        $roles = Role::pluck('name', 'name')->all();
-        $userRole = $user->roles->pluck('name', 'name')->all();
+        try {
+            if ($id == null || !isset($id)) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Id user perlu diisi',
+                ], 400);
+            }
 
-        return view('users.edit', compact('user', 'roles', 'userRole'));
+            $user = User::find($id);
+            $roles = Role::pluck('name', 'name')->all();
+            $userRole = $user->roles->pluck('id', 'name')->all();
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Berhasil mendapatkan data user',
+                'data' => [
+                    'user' => $user,
+                    'roles' => $roles,
+                    'userRole' => $userRole
+                ]
+            ]);
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => false,
+                'errors'  => $e->getMessage(),
+            ], 400);
+        }
     }
-
     /**
      * Update the specified resource in storage.
      *
@@ -109,31 +176,56 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id): RedirectResponse
+    public function update(Request $request, $id): JsonResponse
     {
-        $this->validate($request, [
-            'name' => 'required',
-            'email' => 'required|email|unique:users,email,' . $id,
-            'password' => 'same:confirm-password',
-            'roles' => 'required'
-        ]);
+        try {
+            $validator = Validator::make($request->all(), [
+                'name' => 'required',
+                'email' => 'required|email|unique:users,email,' . $id,
+                'password' => 'same:confirm-password',
+                'roles' => 'nullable'
+            ]);
 
-        $input = $request->all();
-        if (!empty($input['password'])) {
-            $input['password'] = Hash::make($input['password']);
-        } else {
-            $input = Arr::except($input, array('password'));
+            if ($validator->fails()) {
+                return response()->json(['errors' => $validator->errors()], 400);
+            }
+
+            $data = $request->all();
+            if (!empty($data['password'])) {
+                $data['password'] = Hash::make($data['password']);
+            } else {
+                $data = Arr::except($data, array('password'));
+            }
+
+            $user = User::find($id);
+            if (!$user) {
+                return response()->json([
+                    'status' => false,
+                    'errors'  => 'Akun user tidak ditemukan',
+                ], 400);
+            }
+
+            $user->update($data);
+            DB::table('model_has_roles')
+                ->where('model_id', $id)
+                ->delete();
+
+            if (!is_null($request->input('roles'))) {
+                $user->assignRole(intval($request->input('roles')));
+            }
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Berhasil mengubah user' . $user->name
+            ]);
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => false,
+                'errors'  => $e->getMessage(),
+            ], 400);
         }
-
-        $user = User::find($id);
-        $user->update($input);
-        DB::table('model_has_roles')->where('model_id', $id)->delete();
-
-        $user->assignRole($request->input('roles'));
-
-        return redirect()->route('users.index')
-            ->with('success', 'User updated successfully');
     }
+
 
     /**
      * Remove the specified resource from storage.
@@ -141,10 +233,37 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id): RedirectResponse
+    public function destroy(Request $request, $id): JsonResponse
     {
-        User::find($id)->delete();
-        return redirect()->route('users.index')
-            ->with('success', 'User deleted successfully');
+        try {
+            $validator = Validator::make($request->all(), [
+                'id' => 'required',
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json(['errors' => $validator->errors()], 400);
+            }
+
+            $user = User::where('id', $id)->first();
+
+            if (!$user) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Data user tidak ditemukan'
+                ], 400);
+            }
+
+            $user->delete();
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Berhasil Menghapus User'
+            ]);
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => false,
+                'errors'  => $e->getMessage(),
+            ], 400);
+        }
     }
 }

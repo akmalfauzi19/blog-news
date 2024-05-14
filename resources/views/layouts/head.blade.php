@@ -34,6 +34,8 @@
  <link rel="stylesheet" href="{{ asset('admin/vendor/libs/formvalidation/dist/css/formValidation.min.css') }}" />
  <link rel="stylesheet" href="{{ asset('admin/vendor/libs/animate-css/animate.css') }}" />
  <link rel="stylesheet" href="{{ asset('admin/vendor/libs/sweetalert2/sweetalert2.css') }}" />
+ <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+ <link rel="stylesheet" href="{{ asset('admin/vendor/libs/toastr/toastr.css') }}" />
 
  <!-- Page CSS -->
 

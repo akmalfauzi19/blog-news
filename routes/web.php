@@ -29,7 +29,18 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 
 Route::group(['middleware' => ['auth']], function () {
     Route::resource('roles', RoleController::class);
+    Route::group(['roles' => 'roles', 'as' => 'roles.'], function () {
+        Route::get('/list-role', [RoleController::class, 'list'])->name('list');
+        Route::get('/detail-role', [RoleController::class, 'getDetailRole'])->name('getDetailRole');
+    });
+
     Route::resource('users', UserController::class);
+    Route::group(['users' => 'users', 'as' => 'users.'], function () {
+        Route::get('/list-users', [UserController::class, 'list'])->name('list');
+        Route::post('/getRoles', [UserController::class, 'getRole'])->name('getRole');
+        Route::get('/getUser/{id}', [UserController::class, 'getUser'])->name('getUser');
+    });
+
     Route::resource('articles', ArticleController::class);
     Route::resource('categories', CategoryController::class);
 });
