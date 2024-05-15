@@ -19,6 +19,7 @@ return new class extends Migration
             $table->foreign('category_id')->references('id')->on('categories')->onDelete('cascade');
             $table->string('title');
             $table->longText('content');
+            $table->string('image');
             $table->enum('status', ['draft', 'publish']);
             $table->timestamps();
         });

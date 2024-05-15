@@ -8,7 +8,6 @@ use App\Models\User;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Arr;
 use Illuminate\View\View;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Exception;

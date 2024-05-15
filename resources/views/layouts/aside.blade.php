@@ -56,9 +56,24 @@
       <div class="menu-inner-shadow"></div>
 
       <ul class="menu-inner py-1">
-          <!-- Apps & Pages -->
-          <li class="menu-header small text-uppercase">
-              <span class="menu-header-text">Apps &amp; Pages</span>
+          <li class="menu-item active open">
+              <a href="javascript:void(0);" class="menu-link menu-toggle">
+                  <i class="menu-icon tf-icons bx bx-check-shield"></i>
+                  <div data-i18n="Articles & Category">Article management</div>
+              </a>
+              <ul class="menu-sub">
+                  <li class="menu-item {{ Route::is('articles.index') ? 'active' : '' }}">
+                      <a href="{{ route('articles.index') }}" class="menu-link">
+                          <div data-i18n="articles">Article</div>
+                      </a>
+                  </li>
+                  <li class="menu-item {{ Route::is('categories.index') ? 'active' : '' }}">
+                      <a href="{{ route('categories.index') }}" class="menu-link">
+                          <div data-i18n="Category">Category</div>
+                      </a>
+                  </li>
+
+              </ul>
           </li>
 
           <li class="menu-item active open">
