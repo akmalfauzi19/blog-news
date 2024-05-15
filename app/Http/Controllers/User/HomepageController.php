@@ -3,63 +3,43 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
+use App\Models\Article;
+use App\Models\Category;
 use Illuminate\Http\Request;
+use Illuminate\View\View;
 
 class HomepageController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        return view('page.users.index');
+        $search = $request->input('query');
+        $category = $request->input('category');
+
+        $query = Article::with(['category'])
+            ->where('status', 'publish');
+
+        if ($category && $category !== 'all') {
+            $query->whereHas('category', function ($q) use ($category) {
+                $q->where('name', $category);
+            });
+        }
+
+        $data = $query->when(isset($search), function ($query) use ($search) {
+            $query->where('title', 'like', '%' . $search . '%');
+        })->paginate(5);
+
+        $categories = Category::get();
+
+        return view('page.users.index', compact('data', 'categories'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function show($slug): View
     {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        $article = Article::where('slug', $slug)->firstOrFail();
+        $categories = Category::get();
+        return view('page.users.show', compact('article', 'categories'));
     }
 }

@@ -5,18 +5,38 @@
                 <div class="container">
                     <div class="col-xl-12">
                         <div class="row d-flex justify-content-between align-items-center">
-                            <div class="header-info-left">
-                                <ul>
-                                    <li><img src="users/img/icon/header_icon1.png" alt="">34ºc, Sunny </li>
-                                    <li><img src="users/img/icon/header_icon1.png" alt="">Tuesday, 18th
-                                        June, 2019</li>
-                                </ul>
-                            </div>
+
                             <div class="header-info-right">
                                 <ul class="header-social">
-                                    <li><a href="#"><i class="fab fa-twitter"></i></a></li>
-                                    <li><a href="#"><i class="fab fa-instagram"></i></a></li>
-                                    <li> <a href="#"><i class="fab fa-pinterest-p"></i></a></li>
+                                    @guest
+                                        @if (Route::has('login'))
+                                            <li class="nav-item">
+                                                <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
+                                            </li>
+                                        @endif
+
+                                        @if (Route::has('register'))
+                                            <li class="nav-item">
+                                                <a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a>
+                                            </li>
+                                        @endif
+                                    @else
+                                        <li class="nav-item">
+                                            <a class="nav-link" href="{{ route('dashboard.index') }}">Dashboard</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" href="{{ route('logout') }}"
+                                                onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                                {{ __('Logout') }}
+                                            </a>
+
+                                            <!-- Form untuk logout -->
+                                            <form id="logout-form" action="{{ route('logout') }}" method="POST"
+                                                class="d-none">
+                                                @csrf
+                                            </form>
+                                        </li>
+                                    @endguest
                                 </ul>
                             </div>
                         </div>
@@ -29,12 +49,14 @@
                         <!-- Logo -->
                         <div class="col-xl-3 col-lg-3 col-md-3">
                             <div class="logo">
-                                <a href="index.html"><img src="users/img/logo/logo.png" alt=""></a>
+                                <a href="{{ route('news.index') }}">
+                                    <img src="users/img/logo/logo.png" alt="">
+                                </a>
                             </div>
                         </div>
                         <div class="col-xl-9 col-lg-9 col-md-9">
                             <div class="header-banner f-right ">
-                                <img src="users/img/hero/header_card.jpg" alt="">
+                                {{-- <img src="users/img/hero/header_card.jpg" alt=""> --}}
                             </div>
                         </div>
                     </div>
@@ -52,34 +74,32 @@
                             <div class="main-menu d-none d-md-block">
                                 <nav>
                                     <ul id="navigation">
-                                        <li><a href="index.html">Home</a></li>
+                                        <li><a href="{{ route('news.index') }}">Home</a></li>
                                         <li><a href="categori.html">Category</a></li>
-                                        <li><a href="about.html">About</a></li>
-                                        <li><a href="latest_news.html">Latest News</a></li>
-                                        <li><a href="contact.html">Contact</a></li>
-                                        <li><a href="#">Pages</a>
-                                            <ul class="submenu">
-                                                <li><a href="elements.html">Element</a></li>
-                                                <li><a href="blog.html">Blog</a></li>
-                                                <li><a href="single-blog.html">Blog Details</a></li>
-                                                <li><a href="details.html">Categori Details</a></li>
-                                            </ul>
-                                        </li>
                                     </ul>
                                 </nav>
                             </div>
                         </div>
-                        {{-- <div class="col-xl-2 col-lg-2 col-md-4">
-                            <div class="header-right-btn f-right d-none d-lg-block">
-                                <i class="fas fa-search special-tag"></i>
-                                <div class="search-box">
-                                    <form action="#">
-                                        <input type="text" placeholder="Search">
+                        <div class="col-xl-2 col-lg-2 col-md-4">
+                            @guest
+                                @if (Route::has('login'))
+                                    <li class="nav-item">
+                                        <a href="{{ route('login') }}">{{ __('Login') }}</a>
+                                    </li>
+                                @endif
 
-                                    </form>
-                                </div>
-                            </div>
-                        </div> --}}
+                                @if (Route::has('register'))
+                                    <li class="nav-item">
+                                        <a href="{{ route('register') }}">{{ __('Register') }}</a>
+                                    </li>
+                                @endif
+                            @else
+                                <li class="nav-item">
+                                    <a href="{{ route('dashboard.index') }}">Dashboard</a>
+                                </li>
+                            @endguest
+
+                        </div>
                         <!-- Mobile Menu -->
                         <div class="col-12">
                             <div class="mobile_menu d-block d-md-none"></div>

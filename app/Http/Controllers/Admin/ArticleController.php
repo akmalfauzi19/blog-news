@@ -92,6 +92,8 @@ class ArticleController extends Controller
 
             $data = $request->all();
 
+            $slug = implode('-', explode(' ', $data['title']));
+
             // upload image
             $originName = $request->file('image')->getClientOriginalName();
             $fileName = pathinfo($originName, PATHINFO_FILENAME);
@@ -106,6 +108,7 @@ class ArticleController extends Controller
                 'author_id' => Auth::user()->id,
                 'category_id' => $data['category'],
                 'title' => $data['title'],
+                'slug' => $slug,
                 'content' => $data['content'],
                 'image' => $url,
                 'status' => 'draft'
@@ -172,7 +175,8 @@ class ArticleController extends Controller
                 unset($data['image']);
                 $data['image'] = $url;
             }
-            // dd($data);
+
+            $data['slug'] = implode('-', explode(' ', $data['title']));
 
             $article = $model::find($id);
             if (!$article) {
