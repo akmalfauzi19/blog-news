@@ -1,9 +1,10 @@
 <?php
 
-use App\Http\Controllers\ArticleController;
-use App\Http\Controllers\CategoryController;
-use App\Http\Controllers\RoleController;
-use App\Http\Controllers\UserController;
+use App\Http\Controllers\Admin\ArticleController;
+use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\RoleController;
+use App\Http\Controllers\Admin\UserController;
 use App\Models\Article;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -29,6 +30,12 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 
 Route::group(['middleware' => ['auth']], function () {
 
+    // Dashboard
+    Route::group(['prefix' => 'dashboard', 'dashboard' => 'dashboard', 'as' => 'dashboard.'], function () {
+        Route::get('/', [DashboardController::class, 'index'])->name('index');
+    });
+
+    // Role
     Route::group(['prefix' => 'roles', 'roles' => 'roles', 'as' => 'roles.'], function () {
         Route::get('/', [RoleController::class, 'index'])->name('index');
         Route::post('/', [RoleController::class, 'store'])->name('store');
@@ -42,7 +49,7 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('/detail', [RoleController::class, 'getDetailRole'])->name('getDetailRole');
     });
 
-
+    // Users
     Route::group(['prefix' => 'users', 'users' => 'users', 'as' => 'users.'], function () {
         Route::get('/', [UserController::class, 'index'])->name('index');
         Route::post('/', [UserController::class, 'store'])->name('store');
@@ -57,7 +64,7 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('/getUser/{id}', [UserController::class, 'getUser'])->name('getUser');
     });
 
-    // Route::resource('articles', ArticleController::class);
+    // Articles'
     Route::group(['prefix' => 'articles', 'articles' => 'articles', 'as' => 'articles.'], function () {
         Route::get('/', [ArticleController::class, 'index'])->name('index');
         Route::get('/{id}/edit', [ArticleController::class, 'edit'])->name('edit');
@@ -76,7 +83,7 @@ Route::group(['middleware' => ['auth']], function () {
         Route::delete('/{id}', [ArticleController::class, 'destroy'])->name('destroy');
     });
 
-    // Route::resource('categories', CategoryController::class)->except(['show']);
+    // categories
     Route::group(['prefix' => 'categories', 'categories' => 'categories', 'as' => 'categories.'], function () {
         Route::get('/', [CategoryController::class, 'index'])->name('index');
         Route::post('/', [CategoryController::class, 'store'])->name('store');

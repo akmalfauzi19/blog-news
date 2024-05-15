@@ -1,6 +1,6 @@
   <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
       <div class="app-brand demo">
-          <a href="index.html" class="app-brand-link">
+          <a href="{{ route('dashboard.index') }}" class="app-brand-link">
               <span class="app-brand-logo demo">
                   <svg width="25" viewBox="0 0 25 42" version="1.1" xmlns="http://www.w3.org/2000/svg"
                       xmlns:xlink="http://www.w3.org/1999/xlink">
@@ -56,7 +56,16 @@
       <div class="menu-inner-shadow"></div>
 
       <ul class="menu-inner py-1">
-          <li class="menu-item active open">
+          <li class="menu-item {{ Route::is('dashboard.index') ? 'active' : '' }}">
+              <a href="{{ route('dashboard.index') }}" class="menu-link">
+                  <i class="menu-icon tf-icons bx bx-universal-access"></i>
+                  <div data-i18n="dashboard">Dashboard</div>
+              </a>
+          </li>
+          @php
+              $articleActive = Route::is('articles.index') || Route::is('categories.index');
+          @endphp
+          <li class="menu-item {{ $articleActive ? 'active open' : '' }}">
               <a href="javascript:void(0);" class="menu-link menu-toggle">
                   <i class="menu-icon tf-icons bx bx-check-shield"></i>
                   <div data-i18n="Articles & Category">Article management</div>
@@ -76,7 +85,10 @@
               </ul>
           </li>
 
-          <li class="menu-item active open">
+          @php
+              $userManagementActive = Route::is('users.index') || Route::is('roles.index');
+          @endphp
+          <li class="menu-item {{ $userManagementActive ? 'active open' : '' }}">
               <a href="javascript:void(0);" class="menu-link menu-toggle">
                   <i class="menu-icon tf-icons bx bx-check-shield"></i>
                   <div data-i18n="Roles & Permissions">Roles & User Management</div>

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -38,7 +38,7 @@ class UserController extends Controller
      */
     public function index(Request $request): View
     {
-        return view('page.users.index');
+        return view('page.admin.users.index');
     }
 
     public function list(Request $request): JsonResponse
@@ -135,7 +135,7 @@ class UserController extends Controller
     public function show($id): View
     {
         $user = User::find($id);
-        return view('page.users.show', compact('user'));
+        return view('page.admin.users.show', compact('user'));
     }
 
     public function getUser(Request $request, $id): JsonResponse

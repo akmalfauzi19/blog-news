@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Controller;
 use App\Models\PremissionCategory;
 use Exception;
 use Illuminate\Http\JsonResponse;
@@ -39,7 +40,7 @@ class RoleController extends Controller
     public function index(Request $request): View
     {
         $roles = PremissionCategory::getPermission()->groupBy('category');
-        return view('page.roles.index', compact('roles'));
+        return view('page.admin.roles.index', compact('roles'));
     }
 
     public function list(Request $request)
@@ -172,7 +173,7 @@ class RoleController extends Controller
             });
         });
 
-        return view('page.roles.show', compact('role', 'data'));
+        return view('page.admin.roles.show', compact('role', 'data'));
     }
 
 

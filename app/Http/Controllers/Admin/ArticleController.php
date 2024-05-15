@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Controller;
 use App\Models\Article;
 use App\Models\Category;
 use Illuminate\Contracts\View\View;
@@ -31,16 +32,9 @@ class ArticleController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    // public function index1(): View
-    // {
-    //     $articles = Article::latest()->paginate(5);
-    //     return view('page.articles.index', compact('articles'))
-    //         ->with('i', (request()->input('page', 1) - 1) * 5);
-    // }
-
     public function index(): View
     {
-        return view('page.articles.index');
+        return view('page.admin.articles.index');
     }
 
     public function list(Request $request): JsonResponse
@@ -72,7 +66,7 @@ class ArticleController extends Controller
      */
     public function create(): View
     {
-        return view('page.articles.create');
+        return view('page.admin.articles.create');
     }
 
     /**
@@ -128,16 +122,6 @@ class ArticleController extends Controller
             ], 400);
         }
     }
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Article  $articles
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Article $articles): View
-    {
-        return view('page.articles.show', compact('articles'));
-    }
 
     /**
      * Show the form for editing the specified resource.
@@ -148,7 +132,7 @@ class ArticleController extends Controller
     public function edit(Request $request, $id): View
     {
         $article = Article::findOrFail($id);
-        return view('page.articles.edit', compact('article'));
+        return view('page.admin.articles.edit', compact('article'));
     }
 
     /**

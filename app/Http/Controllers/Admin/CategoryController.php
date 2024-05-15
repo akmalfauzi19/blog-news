@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Controller;
 use App\Models\Category;
 use Exception;
 use Illuminate\View\View;
@@ -32,7 +33,7 @@ class CategoryController extends Controller
     public function index(Request $request): View
     {
         // dd(Auth::user()->roles->toArray());
-        return view('page.category.index');
+        return view('page.admin.category.index');
     }
 
     public function list(Request $request): JsonResponse
