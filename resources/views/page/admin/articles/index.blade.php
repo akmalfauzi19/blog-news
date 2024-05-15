@@ -144,13 +144,7 @@
                 var url = "{{ route('articles.update-status', ':id') }}";
                 url = url.replace(':id', id);
 
-                if ($(this).is(':checked')) {
-                    $(this).attr('value', 'true');
-                } else {
-                    $(this).attr('value', 'false');
-                }
-
-                const status = $('#article_status').val()
+                const status = $(this).is(':checked')
 
                 $.ajax({
                     type: "PATCH",

@@ -124,7 +124,9 @@
                 });
             }
         });
+    </script>
 
+    <script>
         ClassicEditor
             .create(document.querySelector('#content'), {
                 ckfinder: {
