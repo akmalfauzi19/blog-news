@@ -34,7 +34,13 @@ Update the .env file with your database credentials and other necessary configur
 php artisan key:generate
 ```
 
-6. Seed the database:
+6. Migrate database
+
+```bash
+php artisan migrate
+```
+
+7. Seed the database:
 
 ```bash
 php artisan db:seed --class=PermissionTableSeeder
