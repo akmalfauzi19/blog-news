@@ -18,13 +18,15 @@ use Illuminate\Support\Facades\Validator;
 class ArticleController extends Controller
 {
     protected $_model;
+
     function __construct()
     {
         $this->_model = new Article();
-        $this->middleware('permission:article-list|article-create|article-edit|article-delete', ['only' => ['index', 'show']]);
-        $this->middleware('permission:article-create', ['only' => ['create', 'store']]);
-        $this->middleware('permission:article-edit', ['only' => ['edit', 'update']]);
-        $this->middleware('permission:article-delete', ['only' => ['destroy']]);
+        $this->middleware('permission:article-list|article-create|article-edit|article-delete')
+            ->only(['index', 'list', 'show', 'create', 'store', 'edit', 'update', 'destroy', 'updateStatus']);
+        $this->middleware('permission:article-create')->only(['create', 'store', 'upload']);
+        $this->middleware('permission:article-edit')->only(['edit', 'update', 'updateStatus']);
+        $this->middleware('permission:article-delete')->only(['destroy']);
     }
 
     /**

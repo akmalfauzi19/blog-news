@@ -18,11 +18,11 @@ class CategoryController extends Controller
     function __construct()
     {
         $this->_model = new Category();
-
-        // $this->middleware('permission:category-list|category-create|category-edit|category-delete', ['only' => ['index', 'store']]);
-        // $this->middleware('permission:category-create', ['only' => ['create', 'store']]);
-        // $this->middleware('permission:category-edit', ['only' => ['edit', 'update']]);
-        // $this->middleware('permission:category-delete', ['only' => ['destroy']]);
+        $this->middleware('permission:category-list|category-create|category-edit|category-delete')
+            ->only(['index', 'list', 'store', 'update', 'destroy']);
+        $this->middleware('permission:category-create')->only(['create', 'store']);
+        $this->middleware('permission:category-edit')->only(['edit', 'update']);
+        $this->middleware('permission:category-delete')->only(['destroy']);
     }
 
     /**
@@ -32,7 +32,6 @@ class CategoryController extends Controller
      */
     public function index(Request $request): View
     {
-        // dd(Auth::user()->roles->toArray());
         return view('page.admin.category.index');
     }
 

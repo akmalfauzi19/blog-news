@@ -14,7 +14,9 @@
                                     <th></th>
                                     <th>id</th>
                                     <th>Name</th>
-                                    <th>Actions</th>
+                                    @if (!empty(array_intersect(['category-edit', 'category-delete'], auth()->user()->list_role)))
+                                        <th>Actions</th>
+                                    @endif
                                 </tr>
                             </thead>
                         </table>
@@ -23,32 +25,35 @@
                 <!--/ category Table -->
             </div>
         </div>
-
-        <div class="offcanvas offcanvas-end" id="add-new-record">
-            <div class="offcanvas-header border-bottom">
-                <h5 class="offcanvas-title" id="exampleModalLabel">New Record</h5>
-                <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-            </div>
-            <div class="offcanvas-body flex-grow-1">
-                <form class="add-new-record pt-0 row g-2" id="form-category" onsubmit="return false">
-                    @csrf
-                    <div class="col-sm-12">
-                        <label class="form-label" for="basicFullname">Title Category</label>
-                        <div class="input-group input-group-merge">
-                            <span id="basicFullname2" class="input-group-text">
-                                <i class="bx bx-category"></i>
-                            </span>
-                            <input type="text" id="name" class="form-control dt-name" name="name"
-                                placeholder="Sport" aria-label="Sport" />
+        @if (!empty(array_intersect(['category-edit', 'category-create'], auth()->user()->list_role)))
+            <div class="offcanvas offcanvas-end" id="add-new-record">
+                <div class="offcanvas-header border-bottom">
+                    <h5 class="offcanvas-title" id="exampleModalLabel">New Record</h5>
+                    <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"
+                        aria-label="Close"></button>
+                </div>
+                <div class="offcanvas-body flex-grow-1">
+                    <form class="add-new-record pt-0 row g-2" id="form-category" onsubmit="return false">
+                        @csrf
+                        <div class="col-sm-12">
+                            <label class="form-label" for="basicFullname">Title Category</label>
+                            <div class="input-group input-group-merge">
+                                <span id="basicFullname2" class="input-group-text">
+                                    <i class="bx bx-category"></i>
+                                </span>
+                                <input type="text" id="name" class="form-control dt-name" name="name"
+                                    placeholder="Sport" aria-label="Sport" />
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-sm-12">
-                        <button type="submit" class="btn btn-primary data-submit me-sm-3 me-1">Submit</button>
-                        <button type="reset" class="btn btn-outline-secondary" data-bs-dismiss="offcanvas">Cancel</button>
-                    </div>
-                </form>
+                        <div class="col-sm-12">
+                            <button type="submit" class="btn btn-primary data-submit me-sm-3 me-1">Submit</button>
+                            <button type="reset" class="btn btn-outline-secondary"
+                                data-bs-dismiss="offcanvas">Cancel</button>
+                        </div>
+                    </form>
+                </div>
             </div>
-        </div>
+        @endif
     </div>
 @endsection
 @push('scripts')
@@ -67,10 +72,12 @@
                     },
                     {
                         data: 'name'
-                    },
-                    {
-                        data: 'action'
                     }
+                    @if (!empty(array_intersect(['category-edit', 'category-create', 'category-delete'], auth()->user()->list_role)))
+                        , {
+                            data: 'action'
+                        }
+                    @endif
                 ],
                 columnDefs: [{
                         // For Responsive
@@ -81,21 +88,39 @@
                         render: function(data, type, full, meta) {
                             return '';
                         }
-                    },
-                    {
-                        // Actions
-                        targets: -1,
-                        title: 'Actions',
-                        orderable: false,
-                        searchable: false,
-                        render: function(data, type, full, meta) {
-                            return '<a href="javascript:;" class="btn btn-sm btn-icon btn-secondary btn-edit" data-id="' +
-                                data + '"><i class="bx bx-edit"></i></a>' +
-                                '&nbsp' +
-                                '<a href="javascript:;" class="btn btn-sm btn-icon btn-danger delete-record" data-id="' +
-                                data + '"><i class="bx bx-trash"></i></a>';
-                        }
                     }
+                    @if (!empty(array_intersect(['category-edit', 'category-edit'], auth()->user()->list_role)))
+                        , {
+                            // Actions
+                            targets: -1,
+                            title: 'Actions',
+                            orderable: false,
+                            searchable: false,
+                            render: function(data, type, full, meta) {
+
+                                // return '<a href="javascript:;" class="btn btn-sm btn-icon btn-secondary btn-edit" data-id="' +
+                                //     data + '"><i class="bx bx-edit"></i></a>' +
+                                //     '&nbsp' +
+                                //     '<a href="javascript:;" class="btn btn-sm btn-icon btn-danger delete-record" data-id="' +
+                                //     data + '"><i class="bx bx-trash"></i></a>';
+
+                                let buttons = '';
+                                @if (!empty(array_intersect(['category-edit'], auth()->user()->list_role)))
+                                    buttons +=
+                                        '<a href="javascript:;" class="btn btn-sm btn-icon btn-secondary btn-edit" data-id="' +
+                                        data + '"><i class="bx bx-edit"></i></a>';
+                                @endif
+
+                                @if (!empty(array_intersect(['category-delete'], auth()->user()->list_role)))
+                                    buttons +=
+                                        '<a href="javascript:;" class="btn btn-sm btn-icon btn-danger delete-record" data-id="' +
+                                        data + '"><i class="bx bx-trash"></i></a>';
+                                @endif
+
+                                return buttons;
+                            }
+                        }
+                    @endif
                 ],
                 dom: '<"card-header flex-column flex-md-row"<"head-label text-center"><"dt-action-buttons text-end pt-3 pt-md-0"B>><"row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6 d-flex justify-content-center justify-content-md-end"f>>t<"row"<"col-sm-12 col-md-6"i><"col-sm-12 col-md-6"p>>',
                 order: [
@@ -104,8 +129,11 @@
                 displayLength: 7,
                 lengthMenu: [7, 10, 25, 50, 75, 100],
                 buttons: [{
-                    text: '<i class="bx bx-plus me-sm-1"></i> <span class="d-none d-sm-inline-block">Add New Record</span>',
-                    className: 'create-new btn btn-primary'
+                    @if (!empty(array_intersect(['category-create'], auth()->user()->list_role)))
+
+                        text: '<i class="bx bx-plus me-sm-1"></i> <span class="d-none d-sm-inline-block">Create Category</span>',
+                        className: 'create-new btn btn-primary'
+                    @endif
                 }],
             });
 

@@ -28,88 +28,86 @@
             </div>
         </div>
         <!--/ Role cards -->
-
-        <!-- Add Role Modal -->
-        <!-- Add Role Modal -->
-        <div class="modal fade" id="addRoleModal" tabindex="-1" aria-hidden="true">
-            <div class="modal-dialog modal-lg modal-simple modal-dialog-centered modal-add-new-role">
-                <div class="modal-content p-1 p-md-4">
-                    <div class="modal-body">
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        <div class="text-center mb-4">
-                            <h3 class="role-title" id="modal-title">Add New Role</h3>
-                            <p>Set role permissions</p>
-                        </div>
-                        <!-- Add role form -->
-                        <form id="addRoleForm" class="row g-3" onsubmit="return false">
-                            @csrf
-                            <div class="col-12 mb-4">
-                                <label class="form-label" for="name">Role Name</label>
-                                <input type="text" id="name" name="name" class="form-control"
-                                    placeholder="Enter a role name" />
+        @if (!empty(array_intersect(['role-create', 'role-edit'], auth()->user()->list_role)))
+            <!-- Add Role Modal -->
+            <div class="modal fade" id="addRoleModal" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-lg modal-simple modal-dialog-centered modal-add-new-role">
+                    <div class="modal-content p-1 p-md-4">
+                        <div class="modal-body">
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            <div class="text-center mb-4">
+                                <h3 class="role-title" id="modal-title">Add New Role</h3>
+                                <p>Set role permissions</p>
                             </div>
-                            <div class="col-12">
-                                <h4>Role Permissions</h4>
-                                <!-- Permission table -->
-                                <div class="table-responsive">
-                                    <table class="table table-flush-spacing">
-                                        <tbody>
-                                            <tr>
-                                                <td class="text-nowrap fw-semibold">
-                                                    Administrator Access
-                                                    <i class="bx bx-info-circle bx-xs" data-bs-toggle="tooltip"
-                                                        data-bs-placement="top"
-                                                        title="Allows a full access to the system"></i>
-                                                </td>
-                                                <td>
-                                                    <div class="form-check">
-                                                        <input class="form-check-input" type="checkbox" id="selectAll" />
-                                                        <label class="form-check-label" for="selectAll"> Select All
-                                                        </label>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                            @foreach ($roles as $name => $role)
+                            <!-- Add role form -->
+                            <form id="addRoleForm" class="row g-3" onsubmit="return false">
+                                @csrf
+                                <div class="col-12 mb-4">
+                                    <label class="form-label" for="name">Role Name</label>
+                                    <input type="text" id="name" name="name" class="form-control"
+                                        placeholder="Enter a role name" />
+                                </div>
+                                <div class="col-12">
+                                    <h4>Role Permissions</h4>
+                                    <!-- Permission table -->
+                                    <div class="table-responsive">
+                                        <table class="table table-flush-spacing">
+                                            <tbody>
                                                 <tr>
-                                                    <td class="text-nowrap fw-semibold">{{ $name }}</td>
+                                                    <td class="text-nowrap fw-semibold">
+                                                        Administrator Access
+                                                        <i class="bx bx-info-circle bx-xs" data-bs-toggle="tooltip"
+                                                            data-bs-placement="top"
+                                                            title="Allows a full access to the system"></i>
+                                                    </td>
                                                     <td>
-                                                        <div class="d-flex">
-                                                            @foreach ($role as $item)
-                                                                <div class="form-check me-3 me-lg-5">
-                                                                    <input class="form-check-input" type="checkbox"
-                                                                        id="permission" name="permission[]"
-                                                                        value="{{ $item->id }}" />
-                                                                    <label class="form-check-label" for="permission">
-                                                                        {{ $item->name }}
-                                                                    </label>
-                                                                </div>
-                                                            @endforeach
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                id="selectAll" />
+                                                            <label class="form-check-label" for="selectAll"> Select All
+                                                            </label>
                                                         </div>
                                                     </td>
                                                 </tr>
-                                            @endforeach
-
-                                        </tbody>
-                                    </table>
+                                                @foreach ($roles as $name => $role)
+                                                    <tr>
+                                                        <td class="text-nowrap fw-semibold">{{ $name }}</td>
+                                                        <td>
+                                                            <div class="d-flex">
+                                                                @foreach ($role as $item)
+                                                                    <div class="form-check me-3 me-lg-5">
+                                                                        <input class="form-check-input" type="checkbox"
+                                                                            id="permission" name="permission[]"
+                                                                            value="{{ $item->id }}" />
+                                                                        <label class="form-check-label" for="permission">
+                                                                            {{ $item->name }}
+                                                                        </label>
+                                                                    </div>
+                                                                @endforeach
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <!-- Permission table -->
                                 </div>
-                                <!-- Permission table -->
-                            </div>
-                            <div class="col-12 text-center">
-                                <button type="submit" class="btn btn-primary me-sm-3 me-1">Submit</button>
-                                <button type="reset" class="btn btn-label-secondary" data-bs-dismiss="modal"
-                                    aria-label="Close">
-                                    Cancel
-                                </button>
-                            </div>
-                        </form>
-                        <!--/ Add role form -->
+                                <div class="col-12 text-center">
+                                    <button type="submit" class="btn btn-primary me-sm-3 me-1">Submit</button>
+                                    <button type="reset" class="btn btn-label-secondary" data-bs-dismiss="modal"
+                                        aria-label="Close">
+                                        Cancel
+                                    </button>
+                                </div>
+                            </form>
+                            <!--/ Add role form -->
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <!--/ Add Role Modal -->
-
-        <!-- / Add Role Modal -->
+            <!--/ Add Role Modal -->
+        @endif
     </div>
 @endsection
 
@@ -168,14 +166,33 @@
                         title: 'Actions',
                         orderable: false,
                         render: function(data, type, full, meta) {
-                            return '<a href="javascript:;" class="btn btn-sm btn-icon btn-primary detail-record" data-id="' +
-                                data + '"><i class="bx bx-show"></i></a>' +
-                                '&nbsp' +
-                                '<a href="javascript:;" class="btn btn-sm btn-icon btn-secondary btn-edit" data-id="' +
-                                data + '"><i class="bx bx-edit"></i></a>' +
-                                '&nbsp' +
-                                '<a href="javascript:;" class="btn btn-sm btn-icon btn-danger delete-record" data-id="' +
-                                data + '"><i class="bx bx-trash"></i></a>';
+                            // return '<a href="javascript:;" class="btn btn-sm btn-icon btn-primary detail-record" data-id="' +
+                            //     data + '"><i class="bx bx-show"></i></a>' +
+                            //     '&nbsp' +
+                            //     '<a href="javascript:;" class="btn btn-sm btn-icon btn-secondary btn-edit" data-id="' +
+                            //     data + '"><i class="bx bx-edit"></i></a>' +
+                            //     '&nbsp' +
+                            //     '<a href="javascript:;" class="btn btn-sm btn-icon btn-danger delete-record" data-id="' +
+                            //     data + '"><i class="bx bx-trash"></i></a>';
+
+                            let buttons = '';
+                            buttons +=
+                                '<a href="javascript:;" class="btn btn-sm btn-icon btn-primary detail-record" data-id="' +
+                                data + '"><i class="bx bx-show"></i></a>';
+
+                            @if (!empty(array_intersect(['role-edit'], auth()->user()->list_role)))
+                                buttons +=
+                                    ' <a href="javascript:;" class="btn btn-sm btn-icon btn-secondary btn-edit" data-id="' +
+                                    data + '"><i class="bx bx-edit"></i></a> ';
+                            @endif
+
+                            @if (!empty(array_intersect(['role-delete'], auth()->user()->list_role)))
+                                buttons +=
+                                    '<a href="javascript:;" class="btn btn-sm btn-icon btn-danger delete-record" data-id="' +
+                                    data + '"><i class="bx bx-trash"></i></a>';
+                            @endif
+
+                            return buttons;
                         }
                     }
                 ],
@@ -185,26 +202,33 @@
                 dom: '<"card-header flex-column flex-md-row"<"head-label text-center"><"dt-action-buttons text-end pt-3 pt-md-0"B>><"row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6 d-flex justify-content-center justify-content-md-end"f>>t<"row"<"col-sm-12 col-md-6"i><"col-sm-12 col-md-6"p>>',
                 displayLength: 7,
                 lengthMenu: [7, 10, 25, 50, 75, 100],
-                buttons: [{
-                    text: '<i class="bx bx-plus me-sm-1"></i> <span class="d-none d-sm-inline-block">Add New Record</span>',
-                    className: 'create-new btn btn-primary',
-                    action: function(e, dt, node, config) {
-                        $('#addRoleModal').modal('show');
-                    }
-                }],
+                buttons: [
+                    @if (!empty(array_intersect(['role-create'], auth()->user()->list_role)))
+                        {
+                            text: '<i class="bx bx-plus me-sm-1"></i> <span class="d-none d-sm-inline-block">Add New Record</span>',
+                            className: 'create-new btn btn-primary',
+                            action: function(e, dt, node, config) {
+                                $('#addRoleModal').modal('show');
+                            }
+                        }
+                    @endif
+
+                ],
 
             });
 
             $('div.head-label').html('<h5 class="card-title mb-0">Table Roles</h5>');
 
-            const selectAll = document.querySelector('#selectAll'),
-                checkboxList = document.querySelectorAll('[type="checkbox"]');
+            @if (!empty(array_intersect(['role-edit', 'role-create'], auth()->user()->list_role)))
+                const selectAll = document.querySelector('#selectAll'),
+                    checkboxList = document.querySelectorAll('[type="checkbox"]');
 
-            selectAll.addEventListener('change', t => {
-                checkboxList.forEach(e => {
-                    e.checked = t.target.checked;
+                selectAll.addEventListener('change', t => {
+                    checkboxList.forEach(e => {
+                        e.checked = t.target.checked;
+                    });
                 });
-            });
+            @endif
 
             $(document).on('submit', '#addRoleForm', function(e) {
                 e.preventDefault();

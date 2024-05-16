@@ -32,6 +32,12 @@ class PermissionTableSeeder extends Seeder
                 'article-create',
                 'article-edit',
                 'article-delete'
+            ],
+            "Category Article Management" => [
+                'category-list',
+                'category-create',
+                'category-edit',
+                'category-delete'
             ]
         ];
 

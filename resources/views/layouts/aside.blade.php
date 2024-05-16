@@ -62,51 +62,66 @@
                   <div data-i18n="dashboard">Dashboard</div>
               </a>
           </li>
-          @php
-              $articleActive = Route::is('articles.index') || Route::is('categories.index');
-          @endphp
-          <li class="menu-item {{ $articleActive ? 'active open' : '' }}">
-              <a href="javascript:void(0);" class="menu-link menu-toggle">
-                  <i class="menu-icon tf-icons bx bx-check-shield"></i>
-                  <div data-i18n="Articles & Category">Article management</div>
-              </a>
-              <ul class="menu-sub">
-                  <li class="menu-item {{ Route::is('articles.index') ? 'active' : '' }}">
-                      <a href="{{ route('articles.index') }}" class="menu-link">
-                          <div data-i18n="articles">Article</div>
-                      </a>
-                  </li>
-                  <li class="menu-item {{ Route::is('categories.index') ? 'active' : '' }}">
-                      <a href="{{ route('categories.index') }}" class="menu-link">
-                          <div data-i18n="Category">Category</div>
-                      </a>
-                  </li>
 
-              </ul>
-          </li>
+          @if (!empty(array_intersect(['article-list', 'category-list'], auth()->user()->list_role)))
+              @php
+                  $articleActive = Route::is('articles.index') || Route::is('categories.index');
+              @endphp
+              <li class="menu-item {{ $articleActive ? 'active open' : '' }}">
+                  <a href="javascript:void(0);" class="menu-link menu-toggle">
+                      <i class="menu-icon tf-icons bx bx-check-shield"></i>
+                      <div data-i18n="Articles & Category">Article management</div>
+                  </a>
+                  <ul class="menu-sub">
+                      @if (!empty(array_intersect(['article-list'], auth()->user()->list_role)))
+                          <li class="menu-item {{ Route::is('articles.index') ? 'active' : '' }}">
+                              <a href="{{ route('articles.index') }}" class="menu-link">
+                                  <div data-i18n="articles">Article</div>
+                              </a>
+                          </li>
+                      @endif
 
-          @php
-              $userManagementActive = Route::is('users.index') || Route::is('roles.index');
-          @endphp
-          <li class="menu-item {{ $userManagementActive ? 'active open' : '' }}">
-              <a href="javascript:void(0);" class="menu-link menu-toggle">
-                  <i class="menu-icon tf-icons bx bx-check-shield"></i>
-                  <div data-i18n="Roles & Permissions">Roles & User Management</div>
-              </a>
-              <ul class="menu-sub">
-                  <li class="menu-item {{ Route::is('users.index') ? 'active' : '' }}">
-                      <a href="{{ route('users.index') }}" class="menu-link">
-                          <div data-i18n="Permission">User Management</div>
-                      </a>
-                  </li>
-                  <li class="menu-item {{ Route::is('roles.index') ? 'active' : '' }}">
-                      <a href="{{ route('roles.index') }}" class="menu-link">
-                          <div data-i18n="Roles">Roles</div>
-                      </a>
-                  </li>
+                      @if (!empty(array_intersect(['category-list'], auth()->user()->list_role)))
+                          <li class="menu-item {{ Route::is('categories.index') ? 'active' : '' }}">
+                              <a href="{{ route('categories.index') }}" class="menu-link">
+                                  <div data-i18n="Category">Category</div>
+                              </a>
+                          </li>
+                      @endif
 
-              </ul>
-          </li>
+                  </ul>
+              </li>
+          @endif
+
+
+          @if (!empty(array_intersect(['user-list', 'role-list'], auth()->user()->list_role)))
+              @php
+                  $userManagementActive = Route::is('users.index') || Route::is('roles.index');
+              @endphp
+              <li class="menu-item {{ $userManagementActive ? 'active open' : '' }}">
+                  <a href="javascript:void(0);" class="menu-link menu-toggle">
+                      <i class="menu-icon tf-icons bx bx-check-shield"></i>
+                      <div data-i18n="Roles & Permissions">Roles & User Management</div>
+                  </a>
+                  <ul class="menu-sub">
+                      @if (!empty(array_intersect(['user-list'], auth()->user()->list_role)))
+                          <li class="menu-item {{ Route::is('users.index') ? 'active' : '' }}">
+                              <a href="{{ route('users.index') }}" class="menu-link">
+                                  <div data-i18n="Permission">User Management</div>
+                              </a>
+                          </li>
+                      @endif
+
+                      @if (!empty(array_intersect(['role-list'], auth()->user()->list_role)))
+                          <li class="menu-item {{ Route::is('roles.index') ? 'active' : '' }}">
+                              <a href="{{ route('roles.index') }}" class="menu-link">
+                                  <div data-i18n="Roles">Roles</div>
+                              </a>
+                          </li>
+                      @endif
+                  </ul>
+              </li>
+          @endif
 
       </ul>
   </aside>

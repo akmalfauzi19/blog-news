@@ -16,76 +16,83 @@
                             <th>Name</th>
                             <th>Email</th>
                             <th>Roles</th>
-                            <th>Action</th>
+                            @if (!empty(array_intersect(['user-edit', 'user-delete'], auth()->user()->list_role)))
+                                <th>Actions</th>
+                            @endif
                         </tr>
                     </thead>
                 </table>
             </div>
         </div>
-        <!-- Modal to add new record -->
-        <div class="offcanvas offcanvas-end" id="add-new-record">
-            <div class="offcanvas-header border-bottom">
-                <h5 class="offcanvas-title" id="exampleModalLabel">New Record</h5>
-                <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-            </div>
-            <div class="offcanvas-body flex-grow-1">
-                <form class="add-new-record pt-0 row g-2" id="form-user" onsubmit="return false">
-                    @csrf
-                    <div class="col-sm-12">
-                        <label class="form-label" for="basicFullname">Name</label>
-                        <div class="input-group input-group-merge">
-                            <span id="basicFullname2" class="input-group-text">
-                                <i class="bx bx-user"></i>
-                            </span>
-                            <input type="text" id="name" class="form-control dt-name" name="name"
-                                placeholder="John Doe" aria-label="John Doe" />
+        @if (!empty(array_intersect(['user-create', 'user-edit'], auth()->user()->list_role)))
+            <!-- Modal to add new record -->
+            <div class="offcanvas offcanvas-end" id="add-new-record">
+                <div class="offcanvas-header border-bottom">
+                    <h5 class="offcanvas-title" id="exampleModalLabel">New Record</h5>
+                    <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"
+                        aria-label="Close"></button>
+                </div>
+                <div class="offcanvas-body flex-grow-1">
+                    <form class="add-new-record pt-0 row g-2" id="form-user" onsubmit="return false">
+                        @csrf
+                        <div class="col-sm-12">
+                            <label class="form-label" for="basicFullname">Name</label>
+                            <div class="input-group input-group-merge">
+                                <span id="basicFullname2" class="input-group-text">
+                                    <i class="bx bx-user"></i>
+                                </span>
+                                <input type="text" id="name" class="form-control dt-name" name="name"
+                                    placeholder="John Doe" aria-label="John Doe" />
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-sm-12">
-                        <label class="form-label" for="email">Email</label>
-                        <div class="input-group input-group-merge">
-                            <span class="input-group-text"><i class="bx bx-envelope"></i></span>
-                            <input type="text" id="email" name="email" class="form-control dt-email"
-                                placeholder="john.doe@example.com" aria-label="john.doe@example.com" />
+                        <div class="col-sm-12">
+                            <label class="form-label" for="email">Email</label>
+                            <div class="input-group input-group-merge">
+                                <span class="input-group-text"><i class="bx bx-envelope"></i></span>
+                                <input type="text" id="email" name="email" class="form-control dt-email"
+                                    placeholder="john.doe@example.com" aria-label="john.doe@example.com" />
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-sm-12">
-                        <label class="form-label" for="basicFullname">Password</label>
-                        <div class="input-group input-group-merge">
-                            <span id="password" class="input-group-text">
-                                <i class="bx bx-lock"></i>
-                            </span>
-                            <input type="password" id="password" placeholder="password" class="form-control dt-password"
-                                name="password" aria-describedby="password" />
+                        <div class="col-sm-12">
+                            <label class="form-label" for="basicFullname">Password</label>
+                            <div class="input-group input-group-merge">
+                                <span id="password" class="input-group-text">
+                                    <i class="bx bx-lock"></i>
+                                </span>
+                                <input type="password" id="password" placeholder="password"
+                                    class="form-control dt-password" name="password" aria-describedby="password" />
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-sm-12">
-                        <label class="form-label" for="basicFullname">Password Confirmation</label>
-                        <div class="input-group input-group-merge">
-                            <span id="password_confirm" class="input-group-text">
-                                <i class="bx bx-lock"></i>
-                            </span>
-                            <input type="password" id="password-confirm" class="form-control dt-password-confirm"
-                                name="password_confirm" placeholder="password confirm"
-                                aria-describedby="password_confirm" />
+                        <div class="col-sm-12">
+                            <label class="form-label" for="basicFullname">Password Confirmation</label>
+                            <div class="input-group input-group-merge">
+                                <span id="password_confirm" class="input-group-text">
+                                    <i class="bx bx-lock"></i>
+                                </span>
+                                <input type="password" id="password-confirm" class="form-control dt-password-confirm"
+                                    name="password_confirm" placeholder="password confirm"
+                                    aria-describedby="password_confirm" />
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-12">
-                        <label class="form-label" for="select2-ajax">Role User</label>
-                        <div class="mb-1 input-group" id="select2-ajax-roles2">
-                            <select class="select2-data-ajax form-control dt-roles" name="roles" id="select2-ajax-roles">
-                                <option value=''>-- Select Role --</option>
-                            </select>
+                        <div class="col-12">
+                            <label class="form-label" for="select2-ajax">Role User</label>
+                            <div class="mb-1 input-group" id="select2-ajax-roles2">
+                                <select class="select2-data-ajax form-control dt-roles" name="roles"
+                                    id="select2-ajax-roles">
+                                    <option value=''>-- Select Role --</option>
+                                </select>
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="col-sm-12">
-                        <button type="submit" class="btn btn-primary data-submit me-sm-3 me-1">Submit</button>
-                        <button type="reset" class="btn btn-outline-secondary" data-bs-dismiss="offcanvas">Cancel</button>
-                    </div>
-                </form>
+                        <div class="col-sm-12">
+                            <button type="submit" class="btn btn-primary data-submit me-sm-3 me-1">Submit</button>
+                            <button type="reset" class="btn btn-outline-secondary"
+                                data-bs-dismiss="offcanvas">Cancel</button>
+                        </div>
+                    </form>
+                </div>
             </div>
-        </div>
+        @endif
     </div>
 @endsection
 @push('scripts')
@@ -110,10 +117,12 @@
                     },
                     {
                         data: 'roles'
-                    },
-                    {
-                        data: 'action'
                     }
+                    @if (!empty(array_intersect(['user-edit', 'user-delete'], auth()->user()->list_role)))
+                        , {
+                            data: 'action'
+                        }
+                    @endif
                 ],
                 columnDefs: [{
                         // For Responsive
@@ -135,30 +144,52 @@
 
                             return roles;
                         }
-                    },
-                    {
-                        // Actions
-                        targets: -1,
-                        title: 'Actions',
-                        orderable: false,
-                        searchable: false,
-                        render: function(data, type, full, meta) {
-                            return (
-                                '<div class="d-inline-block">' +
-                                '<a href="javascript:;" class="btn btn-sm btn-icon dropdown-toggle hide-arrow" data-bs-toggle="dropdown"><i class="bx bx-dots-vertical-rounded"></i></a>' +
-                                '<ul class="dropdown-menu dropdown-menu-end m-0">' +
-                                '<li><a href="javascript:;" class="dropdown-item detail-record" data-id="' +
-                                data + '">Details</a></li>' +
-                                '<div class="dropdown-divider"></div>' +
-                                '<li><a href="javascript:;" class="dropdown-item text-danger delete-record" data-id="' +
-                                data +
-                                '">Delete</a></li>' +
-                                '</ul>' +
-                                '</div>' +
-                                '<a href="javascript:;" class="btn btn-sm btn-icon item-edit"><i class="bx bxs-edit"></i></a>'
-                            );
-                        }
                     }
+                    @if (!empty(array_intersect(['user-edit', 'user-edit'], auth()->user()->list_role)))
+                        , {
+                            // Actions
+                            targets: -1,
+                            title: 'Actions',
+                            orderable: false,
+                            searchable: false,
+                            render: function(data, type, full, meta) {
+                                // return (
+                                //     '<div class="d-inline-block">' +
+                                //     '<a href="javascript:;" class="btn btn-sm btn-icon dropdown-toggle hide-arrow" data-bs-toggle="dropdown"><i class="bx bx-dots-vertical-rounded"></i></a>' +
+                                //     '<ul class="dropdown-menu dropdown-menu-end m-0">' +
+                                //     '<li><a href="javascript:;" class="dropdown-item detail-record" data-id="' +
+                                //     data + '">Details</a></li>' +
+                                //     '<div class="dropdown-divider"></div>' +
+                                //     '<li><a href="javascript:;" class="dropdown-item text-danger delete-record" data-id="' +
+                                //     data +
+                                //     '">Delete</a></li>' +
+                                //     '</ul>' +
+                                //     '</div>' +
+                                //     '<a href="javascript:;" class="btn btn-sm btn-icon item-edit"><i class="bx bxs-edit"></i></a>'
+                                // );
+
+                                let buttons = '';
+                                buttons += '<div class="d-inline-block">' +
+                                    '<a href="javascript:;" class="btn btn-sm btn-icon dropdown-toggle hide-arrow" data-bs-toggle="dropdown"><i class="bx bx-dots-vertical-rounded"></i></a>' +
+                                    '<ul class="dropdown-menu dropdown-menu-end m-0">' +
+                                    '<li><a href="javascript:;" class="dropdown-item detail-record" data-id="' +
+                                    data + '">Details</a></li>';
+                                @if (!empty(array_intersect(['user-delete'], auth()->user()->list_role)))
+                                    buttons +=
+                                        '<li><a href="javascript:;" class="dropdown-item text-danger delete-record" data-id="' +
+                                        data + '">Delete</a></li>';
+                                @endif
+                                buttons += '</ul></div>';
+                                @if (!empty(array_intersect(['user-edit'], auth()->user()->list_role)))
+                                    buttons +=
+                                        '<a href="javascript:;" class="btn btn-sm btn-icon item-edit"><i class="bx bxs-edit"></i></a>';
+                                @endif
+
+                                return buttons;
+
+                            }
+                        }
+                    @endif
                 ],
                 order: [
                     [2, 'desc']
@@ -167,8 +198,12 @@
                 displayLength: 7,
                 lengthMenu: [7, 10, 25, 50, 75, 100],
                 buttons: [{
-                    text: '<i class="bx bx-plus me-sm-1"></i> <span class="d-none d-sm-inline-block">Add New Record</span>',
-                    className: 'create-new btn btn-primary'
+                    @if (!empty(array_intersect(['user-create'], auth()->user()->list_role)))
+
+                        text: '<i class="bx bx-plus me-sm-1"></i> <span class="d-none d-sm-inline-block">Add New User</span>',
+                        className: 'create-new btn btn-primary'
+                    @endif
+
                 }],
                 responsive: {
                     details: {

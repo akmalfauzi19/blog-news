@@ -5,6 +5,7 @@ namespace App\Models;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class Article extends Model
@@ -22,6 +23,7 @@ class Article extends Model
         $records = $this->orderByRaw('@rownum := @rownum + 1')
             ->where('articles.title', 'like', '%' . $searchValue . '%')
             ->select('articles.*', DB::raw('@rownum := 0 AS rownum'))
+            ->author()
             ->skip($start)
             ->take($rowperpage)
             ->get();
@@ -62,5 +64,12 @@ class Article extends Model
     public function getDatePublishAttribute()
     {
         return Carbon::createFromFormat('Y-m-d H:i:s', $this->created_at)->format('d-m-Y H:i');
+    }
+
+    public function scopeAuthor($query)
+    {
+        if (Auth::user()->getRoleNames()[0] != 'Admin') {
+            $query->where('author_id', Auth::user()->id);
+        }
     }
 }

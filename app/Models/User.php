@@ -6,6 +6,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
@@ -45,6 +46,8 @@ class User extends Authenticatable
         'created_at' => 'datetime:Y-m-d H:m:s',
         'updated_at' => 'datetime:Y-m-d H:m:s'
     ];
+
+    protected $appends = ['list_role'];
 
     public function list($columnName = null, $columnSortOrder = null, $searchValue = null, $start = null, $rowperpage = null, $draw = null, $filterRoles = null)
     {
@@ -101,5 +104,12 @@ class User extends Authenticatable
                 $q->where('name', $filterRoles);
             });
         }
+    }
+
+    public function getListRoleAttribute()
+    {
+        $permissionUser = Auth::user()->getAllPermissions()->toArray();
+        $roles = array_column($permissionUser, 'name');
+        return array_values(array_unique($roles));
     }
 }
